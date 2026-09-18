@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMaterials, simulate } from "./api";
+import "./App.css";
 
 function App() {
   const [materials, setMaterials] = useState({});
@@ -85,7 +86,7 @@ function App() {
 
 
   return (
-    <div>
+    <div className="App">
 
       <h1>AIKYAM</h1>
 

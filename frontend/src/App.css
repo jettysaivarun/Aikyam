@@ -1,184 +1,733 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+:root {
+  --bg: #05070b;
+  --panel: #0b1018;
+  --panel-2: #0f1621;
+
+  --cyan: #3df2d0;
+  --blue: #55bfff;
+  --orange: #ff8a4c;
+  --purple: #a78bfa;
+
+  --white: #f5f7fb;
+  --text: #b8c1ce;
+  --muted: #697587;
+
+  --border: rgba(255,255,255,.09);
 }
 
-.hero {
-  position: relative;
+/* =========================
+   BASE
+   ========================= */
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+* {
+  box-sizing: border-box;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
+body {
+  margin: 0;
+  min-height: 100vh;
 
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  font-family: "Space Grotesk", sans-serif;
+
+  color: var(--white);
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(61,242,208,.09),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 90% 30%,
+      rgba(167,139,250,.07),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(255,138,76,.07),
+      transparent 30%
+    ),
+    #05070b;
+
+  padding: 45px 20px;
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
+#root {
   width: 100%;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+
+/* =========================
+   MAIN APP
+   ========================= */
+
+.App {
+  position: relative;
+
+  width: min(760px, 100%);
+
+  margin: auto;
+
+  padding: 38px 42px 42px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14,21,32,.96),
+      rgba(7,11,18,.97)
+    );
+
+  border: 1px solid rgba(61,242,208,.12);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 35px 90px rgba(0,0,0,.6),
+    0 0 60px rgba(61,242,208,.025);
+
+  overflow: hidden;
+}
+
+
+/* top accent */
+
+.App::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 8%;
+  right: 8%;
+
+  height: 2px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--cyan),
+    var(--blue),
+    var(--purple),
+    var(--orange),
+    transparent
+  );
+
+  box-shadow: 0 0 18px rgba(61,242,208,.5);
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
+h1 {
+  margin: 5px 0 4px;
+
+  text-align: center;
+
+  font-size: 4.4rem;
+
+  line-height: 1;
+
+  letter-spacing: .12em;
+
+  font-weight: 700;
+
+  background: linear-gradient(
+    100deg,
+    #ffffff 15%,
+    var(--cyan) 48%,
+    var(--blue) 70%,
+    var(--orange) 100%
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+h1 + p {
+  margin: 10px 0 30px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .76rem;
+
+  letter-spacing: .12em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================
+   SECTION HEADINGS
+   ========================= */
+
+h2 {
+  position: relative;
+
+  margin: 28px 0 14px;
+
+  padding-left: 12px;
+
+  font-size: 1.25rem;
+
+  font-weight: 600;
+
+  color: var(--white);
+}
+
+h2::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 3px;
+
+  width: 3px;
+  height: 20px;
+
+  border-radius: 5px;
+
+  background: var(--cyan);
+
+  box-shadow: 0 0 10px rgba(61,242,208,.6);
+}
+
+
+/* =========================
+   CLIMATE SELECT
+   ========================= */
+
+/* First select = climate */
+
+.App > select:first-of-type {
+  display: block;
+
+  width: 260px;
+
+  margin: 0 auto 25px;
+}
+
+
+/* =========================
+   LABELS
+   ========================= */
+
+label {
+  display: inline-flex;
+
+  align-items: center;
+
+  width: 250px;
+
+  margin: 5px 0;
+
+  color: var(--text);
+
+  font-size: .9rem;
+}
+
+
+/* =========================
+   INPUTS
+   ========================= */
+
+input,
+select {
+  height: 38px;
+
+  padding: 8px 11px;
+
+  border-radius: 8px;
+
+  border: 1px solid rgba(255,255,255,.1);
+
+  background: #080d15;
+
+  color: var(--white);
+
+  outline: none;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .82rem;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+input {
+  width: 155px;
+
+  margin-left: 5px;
+}
+
+select {
+  width: 175px;
+}
+
+
+/* hover */
+
+input:hover,
+select:hover {
+  border-color: rgba(61,242,208,.3);
+}
+
+
+/* focus */
+
+input:focus,
+select:focus {
+  border-color: var(--cyan);
+
+  background: #0a121a;
+
+  box-shadow:
+    0 0 0 3px rgba(61,242,208,.06),
+    0 0 18px rgba(61,242,208,.08);
+}
+
+
+/* number controls */
+
+input[type="number"] {
+  color-scheme: dark;
+}
+
+
+/* dropdown */
+
+select option {
+  background: #0b111a;
+
+  color: white;
+}
+
+
+/* =========================
+   FORM ROWS
+   ========================= */
+
+/*
+   Your current JSX has:
+   label
+   input
+   br
+
+   This makes the controls sit neatly
+   without giant full-width bars.
+*/
+
+.App > label {
+  margin-left: 50px;
+}
+
+
+/* =========================
+   MATERIAL SELECTS
+   ========================= */
+
+/* Material selects should be compact */
+
+.App > select:not(:first-of-type) {
+  margin-left: 5px;
+}
+
+
+/* =========================
+   BREAK SECTIONS VISUALLY
+   ========================= */
+
+.App > br {
+  line-height: 8px;
+}
+
+
+/* =========================
+   SIMULATION BUTTON
+   ========================= */
+
+button {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  width: 280px;
+
+  height: 52px;
+
+  margin: 32px auto 5px;
+
+  border: 1px solid rgba(61,242,208,.35);
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      110deg,
+      #102b2a,
+      #123a3a
+    );
+
+  color: var(--cyan);
+
+  font-family: "Space Grotesk", sans-serif;
+
+  font-size: .88rem;
+
+  font-weight: 600;
+
+  letter-spacing: .08em;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 25px rgba(61,242,208,.06),
+    inset 0 0 20px rgba(61,242,208,.03);
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+button::before {
+  content: "▶";
+
+  font-size: 10px;
+
+  color: #06110f;
+
+  display: grid;
+
+  place-items: center;
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  background: var(--cyan);
+
+  box-shadow: 0 0 12px rgba(61,242,208,.5);
+}
+
+button:hover {
+  transform: translateY(-3px);
+
+  border-color: var(--cyan);
+
+  background:
+    linear-gradient(
+      110deg,
+      #123936,
+      #15504c
+    );
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.35),
+    0 0 30px rgba(61,242,208,.14);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .6;
+
+  cursor: wait;
+}
+
+
+/* =========================
+   RESULTS CONTAINER
+   ========================= */
+
+/*
+   In your JSX the result is the direct
+   div rendered after the button.
+*/
+
+.App > div:last-child {
+  position: relative;
+
+  margin-top: 38px;
+
+  padding: 25px;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17,27,40,.95),
+      rgba(8,14,23,.95)
+    );
+
+  border: 1px solid rgba(61,242,208,.15);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 15px 40px rgba(0,0,0,.25);
+}
+
+
+/* Results heading */
+
+.App > div:last-child h2 {
+  margin-top: 0;
+
+  font-size: 1.45rem;
+}
+
+
+/* =========================
+   RESULT SUBHEADINGS
+   ========================= */
+
+.App > div:last-child h3 {
+  margin: 24px 0 10px;
+
+  color: var(--muted);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .7rem;
+
+  letter-spacing: .14em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================
+   U VALUE RESULT CARDS
+   ========================= */
+
+/*
+   These paragraphs become cards.
+*/
+
+.App > div:last-child h3:first-of-type ~ p {
+  display: inline-flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  vertical-align: top;
+
+  width: calc(25% - 8px);
+
+  min-height: 80px;
+
+  margin: 0 5px 8px;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  background: #080e17;
+
+  border: 1px solid var(--border);
+
+  color: var(--muted);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .68rem;
+
+  line-height: 1.7;
+}
+
+
+/* Make values pop */
+
+.App > div:last-child h3:first-of-type ~ p::first-line {
+  color: var(--white);
+}
+
+
+/* Average card */
+
+.App > div:last-child h3:first-of-type ~ p:nth-of-type(4) {
+  border-color: rgba(61,242,208,.3);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(61,242,208,.08),
+      rgba(0,184,255,.03)
+    );
+
+  color: var(--cyan);
+
+  box-shadow:
+    0 0 20px rgba(61,242,208,.04);
+}
+
+
+/* =========================
+   TEMPERATURE DATA
+   ========================= */
+
+.App > div:last-child h3:nth-of-type(2) ~ p {
+  padding: 12px 14px;
+
+  margin: 5px 0;
+
+  border-radius: 8px;
+
+  background: #080d15;
+
+  border: 1px solid rgba(255,255,255,.06);
+
+  color: var(--text);
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .68rem;
+
+  line-height: 1.7;
+
+  word-break: break-word;
+}
+
+
+/* Ambient */
+
+.App > div:last-child h3:nth-of-type(2) ~ p:first-of-type {
+  border-left: 3px solid var(--orange);
+}
+
+
+/* Indoor */
+
+.App > div:last-child h3:nth-of-type(2) ~ p:nth-of-type(2) {
+  border-left: 3px solid var(--cyan);
+}
+
+
+/* =========================
+   SOLAR
+   ========================= */
+
+.App > div:last-child h3:nth-of-type(3) ~ p {
+  padding: 14px;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255,138,76,.08),
+      rgba(255,200,87,.025)
+    );
+
+  border: 1px solid rgba(255,138,76,.18);
+
+  color: #ffc19f;
+
+  font-family: "DM Mono", monospace;
+
+  font-size: .68rem;
+
+  line-height: 1.8;
+
+  word-break: break-word;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 650px) {
+
+  body {
+    padding: 20px 10px;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .App {
+    padding: 30px 20px;
+
+    border-radius: 18px;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  h1 {
+    font-size: 3.2rem;
+  }
+
+  .App > label {
+    width: 100%;
+
+    margin-left: 0;
+
+    justify-content: space-between;
+  }
+
+  input {
+    width: 150px;
+  }
+
+  .App > select {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .App > select:first-of-type {
+    width: 100%;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .App > div:last-child h3:first-of-type ~ p {
+    width: calc(50% - 8px);
+  }
+}
+
+@media (max-width: 420px) {
+
+  .App > label {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 5px;
+  }
+
+  input {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .App > div:last-child h3:first-of-type ~ p {
+    width: 100%;
+
+    margin: 4px 0;
   }
 }
