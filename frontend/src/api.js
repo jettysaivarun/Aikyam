@@ -1,36 +1,112 @@
-const API_URL = "https://aikyam-backend-1x1c.onrender.com";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://aikyam-backend-1x1c.onrender.com";
 
-export async function getMaterials() {
-    const response = await fetch(
-        `${API_URL}/materials`
-    );
 
-    if (!response.ok) {
-        throw new Error("Failed to load materials");
+async function request(
+  path,
+  options = {}
+) {
+
+  const response = await fetch(
+    `${API_URL}${path}`,
+    {
+      headers: {
+        "Content-Type":
+          "application/json",
+
+        ...(options.headers || {}),
+      },
+
+      ...options,
+    }
+  );
+
+
+  if (!response.ok) {
+
+    let message =
+      `Request failed (${response.status})`;
+
+    try {
+
+      const body =
+        await response.json();
+
+      message =
+        body.detail ||
+        message;
+
+    } catch {
+
+      // Ignore JSON parsing error.
     }
 
-    return response.json();
+    throw new Error(
+      message
+    );
+  }
+
+
+  return response.json();
 }
 
 
-export async function simulate(data) {
-
-    const response = await fetch(
-        `${API_URL}/simulate`,
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(data)
-        }
+export const getMaterials =
+  () =>
+    request(
+      "/materials"
     );
 
-    if (!response.ok) {
-        throw new Error("Simulation failed");
-    }
 
-    return response.json();
-}
+export const getClimates =
+  () =>
+    request(
+      "/climates"
+    );
+
+
+export const getLocations =
+  () =>
+    request(
+      "/locations"
+    );
+
+
+export const simulate =
+  (data) =>
+    request(
+      "/simulate",
+      {
+        method: "POST",
+
+        body:
+          JSON.stringify(data),
+      }
+    );
+
+
+export const optimize =
+  (data) =>
+    request(
+      "/optimize",
+      {
+        method: "POST",
+
+        body:
+          JSON.stringify(data),
+      }
+    );
+
+
+export const compare =
+  (data) =>
+    request(
+      "/compare",
+      {
+        method: "POST",
+
+        body:
+          JSON.stringify(data),
+      }
+    );

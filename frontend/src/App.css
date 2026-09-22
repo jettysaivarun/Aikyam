@@ -1,733 +1,1675 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
 :root {
-  --bg: #05070b;
-  --panel: #0b1018;
-  --panel-2: #0f1621;
+  --bg: #060a0d;
+  --panel: #0a1016;
+  --panel-2: #0d151d;
+  --line: rgba(255, 255, 255, 0.08);
 
-  --cyan: #3df2d0;
-  --blue: #55bfff;
-  --orange: #ff8a4c;
-  --purple: #a78bfa;
+  --text: #eef5f3;
+  --muted: #7d8995;
 
-  --white: #f5f7fb;
-  --text: #b8c1ce;
-  --muted: #697587;
+  --mint: #56e0c2;
+  --orange: #ff9d62;
+  --warning: #ffb35c;
 
-  --border: rgba(255,255,255,.09);
+  --radius: 14px;
 }
 
-/* =========================
+
+/* =========================================================
    BASE
-   ========================= */
+========================================================= */
 
 * {
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-
-  font-family: "Space Grotesk", sans-serif;
-
-  color: var(--white);
-
   background:
     radial-gradient(
-      circle at 15% 10%,
-      rgba(61,242,208,.09),
-      transparent 25%
-    ),
-    radial-gradient(
-      circle at 90% 30%,
-      rgba(167,139,250,.07),
-      transparent 25%
-    ),
-    radial-gradient(
-      circle at 50% 100%,
-      rgba(255,138,76,.07),
+      circle at 20% 0%,
+      rgba(86, 224, 194, 0.055),
       transparent 30%
     ),
-    #05070b;
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(70, 120, 255, 0.045),
+      transparent 30%
+    ),
+    var(--bg);
 
-  padding: 45px 20px;
+  color: var(--text);
 }
 
-#root {
-  width: 100%;
-}
 
+/* =========================================================
+   APP SHELL
+========================================================= */
 
-/* =========================
-   MAIN APP
-   ========================= */
-
-.App {
-  position: relative;
-
-  width: min(760px, 100%);
-
+.app-shell {
+  width: min(1500px, calc(100% - 40px));
   margin: auto;
+}
 
-  padding: 38px 42px 42px;
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar {
+  height: 74px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--line);
+}
+
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: var(--mint);
+
+  background:
+    rgba(86, 224, 194, 0.07);
+
+  border:
+    1px solid rgba(86, 224, 194, 0.15);
+}
+
+
+.brand b {
+  display: block;
+
+  letter-spacing: 0.12em;
+  font-size: 14px;
+}
+
+
+.brand span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #667583;
+
+  font:
+    9px "DM Mono",
+    monospace;
+
+  letter-spacing: 0.05em;
+}
+
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #71808d;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--mint);
+
+  box-shadow:
+    0 0 12px
+    rgba(86, 224, 194, 0.6);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  padding: 65px 0 38px;
+}
+
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: var(--mint);
+
+  font:
+    10px "DM Mono",
+    monospace;
+
+  letter-spacing: 0.1em;
+}
+
+
+.hero h1 {
+  max-width: 850px;
+
+  margin: 14px 0 15px;
+
+  font-size: clamp(
+    44px,
+    6vw,
+    72px
+  );
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
+}
+
+
+.hero h1 em {
+  color: var(--mint);
+  font-style: normal;
+}
+
+
+.hero p {
+  max-width: 780px;
+
+  color: #7e8b97;
+
+  font-size: 15px;
+
+  line-height: 1.75;
+
+  margin: 0;
+}
+
+
+/* =========================================================
+   WORKSPACE
+========================================================= */
+
+.workspace {
+  display: grid;
+
+  grid-template-columns:
+    320px
+    minmax(0, 1fr);
+
+  gap: 18px;
+
+  align-items: start;
+}
+
+
+/* =========================================================
+   CONTROL PANEL
+========================================================= */
+
+.control-panel {
+  position: sticky;
+  top: 18px;
+
+  padding: 20px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 16px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(14,21,32,.96),
-      rgba(7,11,18,.97)
+      #0b1218,
+      #080e13
     );
-
-  border: 1px solid rgba(61,242,208,.12);
-
-  border-radius: 24px;
-
-  box-shadow:
-    0 35px 90px rgba(0,0,0,.6),
-    0 0 60px rgba(61,242,208,.025);
-
-  overflow: hidden;
 }
 
 
-/* top accent */
-
-.App::before {
-  content: "";
-
-  position: absolute;
-
-  top: 0;
-  left: 8%;
-  right: 8%;
-
-  height: 2px;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--cyan),
-    var(--blue),
-    var(--purple),
-    var(--orange),
-    transparent
-  );
-
-  box-shadow: 0 0 18px rgba(61,242,208,.5);
+.panel-heading {
+  margin-bottom: 22px;
 }
 
 
-/* =========================
-   HEADER
-   ========================= */
-
-h1 {
-  margin: 5px 0 4px;
-
-  text-align: center;
-
-  font-size: 4.4rem;
-
-  line-height: 1;
-
-  letter-spacing: .12em;
-
-  font-weight: 700;
-
-  background: linear-gradient(
-    100deg,
-    #ffffff 15%,
-    var(--cyan) 48%,
-    var(--blue) 70%,
-    var(--orange) 100%
-  );
-
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  color: transparent;
-}
-
-h1 + p {
-  margin: 10px 0 30px;
-
-  text-align: center;
-
-  color: var(--muted);
-
-  font-family: "DM Mono", monospace;
-
-  font-size: .76rem;
-
-  letter-spacing: .12em;
-
-  text-transform: uppercase;
+.panel-heading.compact {
+  margin-top: 28px;
 }
 
 
-/* =========================
-   SECTION HEADINGS
-   ========================= */
+.panel-heading span {
+  color: #657381;
 
-h2 {
-  position: relative;
+  font:
+    9px "DM Mono",
+    monospace;
 
-  margin: 28px 0 14px;
-
-  padding-left: 12px;
-
-  font-size: 1.25rem;
-
-  font-weight: 600;
-
-  color: var(--white);
-}
-
-h2::before {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  top: 3px;
-
-  width: 3px;
-  height: 20px;
-
-  border-radius: 5px;
-
-  background: var(--cyan);
-
-  box-shadow: 0 0 10px rgba(61,242,208,.6);
+  letter-spacing: 0.12em;
 }
 
 
-/* =========================
-   CLIMATE SELECT
-   ========================= */
+.panel-heading h2 {
+  margin: 6px 0 0;
 
-/* First select = climate */
-
-.App > select:first-of-type {
-  display: block;
-
-  width: 260px;
-
-  margin: 0 auto 25px;
+  font-size: 20px;
 }
 
 
-/* =========================
-   LABELS
-   ========================= */
+/* =========================================================
+   FORM
+========================================================= */
 
-label {
-  display: inline-flex;
+.field {
+  margin-bottom: 14px;
+}
 
+
+.field label {
+  display: flex;
   align-items: center;
+  gap: 5px;
 
-  width: 250px;
+  margin-bottom: 7px;
 
-  margin: 5px 0;
+  color: #8d9aa7;
 
-  color: var(--text);
-
-  font-size: .9rem;
+  font:
+    10px "DM Mono",
+    monospace;
 }
 
 
-/* =========================
-   INPUTS
-   ========================= */
+.field label small {
+  color: #586673;
+}
 
-input,
-select {
-  height: 38px;
 
-  padding: 8px 11px;
+.field input,
+.field select {
+  width: 100%;
+  height: 42px;
 
-  border-radius: 8px;
+  padding: 0 11px;
 
-  border: 1px solid rgba(255,255,255,.1);
+  border:
+    1px solid var(--line);
 
-  background: #080d15;
-
-  color: var(--white);
+  border-radius: 9px;
 
   outline: none;
 
-  font-family: "DM Mono", monospace;
+  background: #080e14;
 
-  font-size: .82rem;
+  color: #e4ecea;
 
-  transition:
-    border-color .2s ease,
-    box-shadow .2s ease,
-    background .2s ease;
-}
-
-input {
-  width: 155px;
-
-  margin-left: 5px;
-}
-
-select {
-  width: 175px;
+  font-size: 12px;
 }
 
 
-/* hover */
-
-input:hover,
-select:hover {
-  border-color: rgba(61,242,208,.3);
-}
-
-
-/* focus */
-
-input:focus,
-select:focus {
-  border-color: var(--cyan);
-
-  background: #0a121a;
+.field input:focus,
+.field select:focus {
+  border-color:
+    rgba(86, 224, 194, 0.35);
 
   box-shadow:
-    0 0 0 3px rgba(61,242,208,.06),
-    0 0 18px rgba(61,242,208,.08);
+    0 0 0 3px
+    rgba(86, 224, 194, 0.04);
 }
 
 
-/* number controls */
+.field-grid {
+  display: grid;
 
-input[type="number"] {
-  color-scheme: dark;
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 9px;
 }
 
 
-/* dropdown */
+/* =========================================================
+   BUDGET
+========================================================= */
 
-select option {
-  background: #0b111a;
-
-  color: white;
-}
-
-
-/* =========================
-   FORM ROWS
-   ========================= */
-
-/*
-   Your current JSX has:
-   label
-   input
-   br
-
-   This makes the controls sit neatly
-   without giant full-width bars.
-*/
-
-.App > label {
-  margin-left: 50px;
-}
-
-
-/* =========================
-   MATERIAL SELECTS
-   ========================= */
-
-/* Material selects should be compact */
-
-.App > select:not(:first-of-type) {
-  margin-left: 5px;
-}
-
-
-/* =========================
-   BREAK SECTIONS VISUALLY
-   ========================= */
-
-.App > br {
-  line-height: 8px;
-}
-
-
-/* =========================
-   SIMULATION BUTTON
-   ========================= */
-
-button {
-  position: relative;
-
+.budget-box {
   display: flex;
-
   align-items: center;
+  gap: 10px;
 
-  justify-content: center;
+  padding: 13px;
 
-  gap: 12px;
+  margin: 18px 0 7px;
 
-  width: 280px;
+  border:
+    1px solid
+    rgba(86, 224, 194, 0.18);
 
-  height: 52px;
-
-  margin: 32px auto 5px;
-
-  border: 1px solid rgba(61,242,208,.35);
-
-  border-radius: 12px;
+  border-radius: 11px;
 
   background:
-    linear-gradient(
-      110deg,
-      #102b2a,
-      #123a3a
-    );
+    rgba(86, 224, 194, 0.045);
 
-  color: var(--cyan);
-
-  font-family: "Space Grotesk", sans-serif;
-
-  font-size: .88rem;
-
-  font-weight: 600;
-
-  letter-spacing: .08em;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 0 25px rgba(61,242,208,.06),
-    inset 0 0 20px rgba(61,242,208,.03);
-
-  transition:
-    transform .2s ease,
-    border-color .2s ease,
-    box-shadow .2s ease,
-    background .2s ease;
+  color: var(--mint);
 }
 
-button::before {
-  content: "▶";
+
+.budget-box > div {
+  flex: 1;
+}
+
+
+.budget-box label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #74818e;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.budget-box input {
+  width: 100%;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #eef5f3;
+
+  font-size: 15px;
+
+  font-weight: 600;
+}
+
+
+.budget-box > span {
+  color: #677583;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.budget-hint {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+
+  margin: 0 4px 18px;
+
+  color: #64717d;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.budget-hint strong {
+  color: var(--mint);
+
+  font-weight: 500;
+
+  text-align: right;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+button {
+  cursor: pointer;
+}
+
+
+.primary-btn,
+.ghost-btn,
+.secondary-btn,
+.report-btn {
+  border: 0;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  transition:
+    0.2s ease;
+}
+
+
+.primary-btn {
+  width: 100%;
+  height: 50px;
+
+  margin-top: 24px;
+
+  color: #06110e;
+
+  background: var(--mint);
+
+  font-weight: 700;
+}
+
+
+.primary-btn:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 10px 28px
+    rgba(86, 224, 194, 0.18);
+}
+
+
+.primary-btn:disabled,
+.ghost-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+
+.ghost-btn {
+  width: 100%;
+  height: 42px;
+
+  margin-top: 9px;
+
+  background: transparent;
+
+  color: #8e9ba8;
+
+  border:
+    1px solid var(--line);
+}
+
+
+.ghost-btn:hover,
+.secondary-btn:hover,
+.report-btn:hover {
+  border-color:
+    rgba(86, 224, 194, 0.35);
+
+  color: var(--mint);
+}
+
+
+.secondary-btn {
+  height: 34px;
+
+  padding: 0 12px;
+
+  margin-top: 15px;
+
+  background: transparent;
+
+  border:
+    1px solid var(--line);
+
+  color: #8795a2;
 
   font-size: 10px;
+}
 
-  color: #06110f;
+
+.report-btn {
+  height: 38px;
+
+  padding: 0 14px;
+
+  color: #a6b1bc;
+
+  background: #0c131a;
+
+  border:
+    1px solid var(--line);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RESULTS
+========================================================= */
+
+.results {
+  min-height: 700px;
+
+  padding: 30px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 16px;
+
+  background:
+    rgba(5, 9, 13, 0.4);
+}
+
+
+.empty-state {
+  min-height: 620px;
 
   display: grid;
 
   place-items: center;
 
-  width: 24px;
-  height: 24px;
+  align-content: center;
 
-  border-radius: 50%;
+  text-align: center;
 
-  background: var(--cyan);
-
-  box-shadow: 0 0 12px rgba(61,242,208,.5);
+  padding: 50px;
 }
 
-button:hover {
-  transform: translateY(-3px);
 
-  border-color: var(--cyan);
+.empty-icon {
+  width: 72px;
+  height: 72px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(86, 224, 194, 0.2);
+
+  border-radius: 20px;
+
+  color: var(--mint);
 
   background:
-    linear-gradient(
-      110deg,
-      #123936,
-      #15504c
-    );
+    rgba(86, 224, 194, 0.05);
 
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.35),
-    0 0 30px rgba(61,242,208,.14);
-}
-
-button:active {
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: .6;
-
-  cursor: wait;
+  margin-bottom: 20px;
 }
 
 
-/* =========================
-   RESULTS CONTAINER
-   ========================= */
+.empty-state h2 {
+  font-size: 27px;
 
-/*
-   In your JSX the result is the direct
-   div rendered after the button.
-*/
+  margin:
+    0 0 10px;
+}
 
-.App > div:last-child {
-  position: relative;
 
-  margin-top: 38px;
+.empty-state p {
+  max-width: 510px;
 
-  padding: 25px;
+  color: var(--muted);
 
-  border-radius: 17px;
+  line-height: 1.7;
+}
+
+
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 28px;
+
+  color: #8e9ba8;
+
+  font:
+    10px "DM Mono",
+    monospace;
+}
+
+
+/* =========================================================
+   RESULT HEADER
+========================================================= */
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+  gap: 15px;
+
+  margin-bottom: 15px;
+}
+
+
+.result-header h2 {
+  font-size: 30px;
+
+  margin:
+    8px 0 0;
+}
+
+
+/* =========================================================
+   OPTIMIZATION STATUS
+========================================================= */
+
+.optimization-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 13px;
+
+  margin-bottom: 12px;
+
+  border-radius: 10px;
+
+  font:
+    10px "DM Mono",
+    monospace;
+}
+
+
+.status-good {
+  color: var(--mint);
+
+  border:
+    1px solid
+    rgba(86, 224, 194, 0.16);
+
+  background:
+    rgba(86, 224, 194, 0.04);
+}
+
+
+.status-warning {
+  color: var(--warning);
+
+  border:
+    1px solid
+    rgba(255, 179, 92, 0.18);
+
+  background:
+    rgba(255, 179, 92, 0.04);
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.metrics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+
+.metric-card {
+  min-height: 112px;
+
+  padding: 15px;
+
+  border-radius: 13px;
+
+  background: #0a1016;
+
+  border:
+    1px solid var(--line);
+
+  display: flex;
+
+  gap: 11px;
+}
+
+
+.metric-icon {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--mint);
+
+  background:
+    rgba(86, 224, 194, 0.08);
+}
+
+
+.metric-card span,
+.metric-card small {
+  display: block;
+
+  color: #74818e;
+
+  font:
+    10px "DM Mono",
+    monospace;
+}
+
+
+.metric-card strong {
+  display: block;
+
+  font-size: 18px;
+
+  margin:
+    6px 0 3px;
+}
+
+
+.metric-card small {
+  font-size: 9px;
+
+  color: #63707d;
+}
+
+
+/* =========================================================
+   DESIGN CARD
+========================================================= */
+
+.design-card {
+  padding: 20px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 15px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(17,27,40,.95),
-      rgba(8,14,23,.95)
+      #101820,
+      #0b1117
     );
 
-  border: 1px solid rgba(61,242,208,.15);
+  margin-bottom: 12px;
+}
+
+
+.design-card.recommended {
+  border-color:
+    rgba(86, 224, 194, 0.28);
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.04),
-    0 15px 40px rgba(0,0,0,.25);
+    inset 0 0 40px
+    rgba(86, 224, 194, 0.025);
 }
 
 
-/* Results heading */
+.recommend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 
-.App > div:last-child h2 {
-  margin-top: 0;
+  color: var(--mint);
 
-  font-size: 1.45rem;
+  font:
+    10px "DM Mono",
+    monospace;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  margin-bottom: 14px;
 }
 
 
-/* =========================
-   RESULT SUBHEADINGS
-   ========================= */
+.design-title {
+  display: flex;
 
-.App > div:last-child h3 {
-  margin: 24px 0 10px;
+  justify-content: space-between;
 
-  color: var(--muted);
+  gap: 15px;
+}
 
-  font-family: "DM Mono", monospace;
 
-  font-size: .7rem;
+.design-title span {
+  font:
+    9px "DM Mono",
+    monospace;
 
-  letter-spacing: .14em;
+  color: #687787;
 
   text-transform: uppercase;
 }
 
 
-/* =========================
-   U VALUE RESULT CARDS
-   ========================= */
+.design-title h3 {
+  font-size: 19px;
 
-/*
-   These paragraphs become cards.
-*/
+  margin:
+    5px 0;
+}
 
-.App > div:last-child h3:first-of-type ~ p {
-  display: inline-flex;
 
-  flex-direction: column;
+.score {
+  width: 62px;
+  height: 62px;
 
-  justify-content: center;
+  border-radius: 50%;
 
-  vertical-align: top;
+  border:
+    1px solid
+    rgba(86, 224, 194, 0.3);
 
-  width: calc(25% - 8px);
+  display: grid;
 
-  min-height: 80px;
+  place-items: center;
 
-  margin: 0 5px 8px;
+  align-content: center;
 
-  padding: 12px;
+  background:
+    rgba(86, 224, 194, 0.05);
+}
+
+
+.score b {
+  font-size: 20px;
+
+  color: var(--mint);
+}
+
+
+.score small {
+  font:
+    8px "DM Mono",
+    monospace;
+
+  color: #687787;
+}
+
+
+.material-pills {
+  display: flex;
+
+  gap: 7px;
+
+  flex-wrap: wrap;
+
+  margin: 14px 0;
+}
+
+
+.material-pills span {
+  font:
+    9px "DM Mono",
+    monospace;
+
+  color: #aab5bf;
+
+  background: #0a1118;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 99px;
+
+  padding:
+    7px 9px;
+}
+
+
+/* =========================================================
+   DESIGN MINI GRID
+========================================================= */
+
+.mini-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  border-top:
+    1px solid var(--line);
+
+  padding-top: 13px;
+}
+
+
+.mini-grid div {
+  border-right:
+    1px solid var(--line);
+
+  padding-left: 12px;
+}
+
+
+.mini-grid div:first-child {
+  padding-left: 0;
+}
+
+
+.mini-grid div:last-child {
+  border: 0;
+}
+
+
+.mini-grid small {
+  display: block;
+
+  color: #687787;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.mini-grid b {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   FEASIBILITY
+========================================================= */
+
+.feasibility {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 14px;
+
+  padding-top: 12px;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  font:
+    11px "DM Mono",
+    monospace;
+}
+
+
+.feasibility.feasible {
+  color: var(--mint);
+}
+
+
+.feasibility.fallback {
+  color: var(--warning);
+}
+
+
+/* =========================================================
+   REASONS
+========================================================= */
+
+.reason-card {
+  padding: 18px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 14px;
+
+  background: #090f15;
+
+  margin-bottom: 28px;
+}
+
+
+.reason-card h3 {
+  font-size: 13px;
+
+  margin:
+    0 0 12px;
+}
+
+
+.reasons {
+  display: grid;
+
+  gap: 9px;
+}
+
+
+.reasons div {
+  display: flex;
+
+  gap: 8px;
+
+  color: #9ba7b2;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+}
+
+
+.reasons svg {
+  color: var(--mint);
+
+  flex: none;
+
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   SECTION TITLES
+========================================================= */
+
+.section-title {
+  margin:
+    28px 0 13px;
+}
+
+
+.section-title span {
+  color: #657381;
+
+  font:
+    9px "DM Mono",
+    monospace;
+
+  letter-spacing: 0.1em;
+}
+
+
+.section-title h3 {
+  font-size: 20px;
+
+  margin:
+    5px 0;
+}
+
+
+/* =========================================================
+   ALTERNATIVES
+========================================================= */
+
+.alternatives {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 10px;
+}
+
+
+.alternatives .design-card {
+  margin: 0;
+}
+
+
+/* =========================================================
+   CHARTS
+========================================================= */
+
+.chart-card {
+  padding: 18px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 14px;
+
+  background: #090f15;
+
+  margin-bottom: 12px;
+}
+
+
+.chart-head {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 15px;
+}
+
+
+.chart-head b {
+  display: block;
+
+  font-size: 13px;
+}
+
+
+.chart-head small {
+  display: block;
+
+  color: #667583;
+
+  font:
+    9px "DM Mono",
+    monospace;
+
+  margin-top: 4px;
+}
+
+
+.legend {
+  font:
+    9px "DM Mono",
+    monospace;
+
+  color: #83909d;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+.indoor-dot,
+.ambient-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  display: inline-block;
+}
+
+
+.indoor-dot {
+  background: var(--mint);
+}
+
+
+.ambient-dot {
+  background: var(--orange);
+
+  margin-left: 7px;
+}
+
+
+.chart {
+  height: 280px;
+}
+
+
+/* =========================================================
+   U VALUE
+========================================================= */
+
+.u-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 9px;
+
+  margin:
+    12px 0 30px;
+}
+
+
+.u-grid div {
+  padding: 15px;
+
+  border:
+    1px solid var(--line);
+
+  border-radius: 12px;
+
+  background: #090f15;
+}
+
+
+.u-grid span,
+.u-grid small {
+  display: block;
+
+  color: #687787;
+
+  font:
+    9px "DM Mono",
+    monospace;
+}
+
+
+.u-grid b {
+  font-size: 20px;
+
+  display: block;
+
+  margin:
+    6px 0;
+}
+
+
+/* =========================================================
+   COMPARISON
+========================================================= */
+
+.compare-table {
+  border:
+    1px solid var(--line);
+
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  background: #090f15;
+}
+
+
+.compare-head,
+.compare-row {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr 1fr 1fr 1fr;
+
+  gap: 10px;
+
+  align-items: center;
+
+  padding:
+    13px 15px;
+}
+
+
+.compare-head {
+  background: #0d151d;
+
+  color: #71808e;
+
+  font:
+    9px "DM Mono",
+    monospace;
+
+  text-transform: uppercase;
+}
+
+
+.compare-row {
+  border-top:
+    1px solid var(--line);
+
+  font-size: 11px;
+}
+
+
+.compare-row span {
+  color: #9ca8b3;
+}
+
+
+.compare-row strong {
+  color: var(--mint);
+}
+
+
+/* =========================================================
+   ASSUMPTIONS
+========================================================= */
+
+.assumptions {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 15px;
+
+  margin-top: 28px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  border-radius: 12px;
+
+  color: #778592;
+
+  background: #080e13;
+}
+
+
+.assumptions svg {
+  color: #8394a0;
+
+  flex: none;
+}
+
+
+.assumptions b {
+  font-size: 10px;
+}
+
+
+.assumptions p {
+  font-size: 10px;
+
+  line-height: 1.55;
+
+  margin:
+    4px 0 0;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error {
+  display: flex;
+
+  gap: 8px;
+
+  align-items: center;
+
+  padding:
+    12px 15px;
+
+  border:
+    1px solid
+    rgba(255, 120, 100, 0.25);
+
+  background:
+    rgba(255, 80, 60, 0.06);
+
+  color: #ffad9c;
 
   border-radius: 10px;
 
-  background: #080e17;
+  margin-bottom: 18px;
 
-  border: 1px solid var(--border);
-
-  color: var(--muted);
-
-  font-family: "DM Mono", monospace;
-
-  font-size: .68rem;
-
-  line-height: 1.7;
+  font-size: 12px;
 }
 
 
-/* Make values pop */
+/* =========================================================
+   LOADING
+========================================================= */
 
-.App > div:last-child h3:first-of-type ~ p::first-line {
-  color: var(--white);
+.spin {
+  animation:
+    spin 1s linear infinite;
 }
 
 
-/* Average card */
+@keyframes spin {
 
-.App > div:last-child h3:first-of-type ~ p:nth-of-type(4) {
-  border-color: rgba(61,242,208,.3);
+  to {
+    transform:
+      rotate(360deg);
+  }
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(61,242,208,.08),
-      rgba(0,184,255,.03)
-    );
-
-  color: var(--cyan);
-
-  box-shadow:
-    0 0 20px rgba(61,242,208,.04);
 }
 
 
-/* =========================
-   TEMPERATURE DATA
-   ========================= */
+/* =========================================================
+   FOOTER
+========================================================= */
 
-.App > div:last-child h3:nth-of-type(2) ~ p {
-  padding: 12px 14px;
+footer {
+  display: flex;
 
-  margin: 5px 0;
+  justify-content: space-between;
 
-  border-radius: 8px;
+  padding:
+    20px 0 30px;
 
-  background: #080d15;
+  color: #5f6d79;
 
-  border: 1px solid rgba(255,255,255,.06);
+  font:
+    9px "DM Mono",
+    monospace;
 
-  color: var(--text);
-
-  font-family: "DM Mono", monospace;
-
-  font-size: .68rem;
-
-  line-height: 1.7;
-
-  word-break: break-word;
+  letter-spacing: 0.06em;
 }
 
 
-/* Ambient */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-.App > div:last-child h3:nth-of-type(2) ~ p:first-of-type {
-  border-left: 3px solid var(--orange);
+@media (
+  max-width: 1050px
+) {
+
+  .workspace {
+    grid-template-columns:
+      310px 1fr;
+  }
+
+  .metrics {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .u-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
 }
 
 
-/* Indoor */
+@media (
+  max-width: 800px
+) {
 
-.App > div:last-child h3:nth-of-type(2) ~ p:nth-of-type(2) {
-  border-left: 3px solid var(--cyan);
+  .app-shell {
+    padding:
+      0 14px;
+  }
+
+  .topbar {
+    height: 65px;
+  }
+
+  .status {
+    display: none;
+  }
+
+  .workspace {
+    grid-template-columns:
+      1fr;
+  }
+
+  .control-panel {
+    position: static;
+  }
+
+  .results {
+    padding: 20px;
+  }
+
+  .hero {
+    padding-top: 20px;
+  }
+
+  .alternatives {
+    grid-template-columns:
+      1fr;
+  }
+
+  .metrics {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .mini-grid {
+    grid-template-columns:
+      1fr 1fr;
+
+    gap: 12px;
+  }
+
+  .mini-grid div:nth-child(2) {
+    border: 0;
+  }
+
+  .result-header {
+    align-items: start;
+
+    flex-direction: column;
+  }
+
 }
 
 
-/* =========================
-   SOLAR
-   ========================= */
+@media (
+  max-width: 500px
+) {
 
-.App > div:last-child h3:nth-of-type(3) ~ p {
-  padding: 14px;
-
-  border-radius: 9px;
-
-  background:
-    linear-gradient(
-      100deg,
-      rgba(255,138,76,.08),
-      rgba(255,200,87,.025)
-    );
-
-  border: 1px solid rgba(255,138,76,.18);
-
-  color: #ffc19f;
-
-  font-family: "DM Mono", monospace;
-
-  font-size: .68rem;
-
-  line-height: 1.8;
-
-  word-break: break-word;
-}
-
-
-/* =========================
-   MOBILE
-   ========================= */
-
-@media (max-width: 650px) {
-
-  body {
-    padding: 20px 10px;
+  main {
+    padding-top: 30px;
   }
 
-  .App {
-    padding: 30px 20px;
-
-    border-radius: 18px;
+  .hero h1 {
+    font-size: 43px;
   }
 
-  h1 {
-    font-size: 3.2rem;
+  .field-grid,
+  .metrics,
+  .u-grid {
+    grid-template-columns:
+      1fr;
   }
 
-  .App > label {
-    width: 100%;
+  .compare-head,
+  .compare-row {
+    grid-template-columns:
+      1.4fr 0.8fr 0.8fr 0.8fr;
 
-    margin-left: 0;
+    font-size: 9px;
 
-    justify-content: space-between;
+    padding:
+      11px 8px;
   }
 
-  input {
-    width: 150px;
+  .chart {
+    height: 230px;
   }
 
-  .App > select {
-    width: 100%;
+  .flow {
+    flex-wrap: wrap;
 
-    margin-left: 0;
+    justify-content: center;
   }
 
-  .App > select:first-of-type {
-    width: 100%;
+  .mini-grid {
+    grid-template-columns:
+      1fr 1fr;
   }
 
-  button {
-    width: 100%;
-  }
-
-  .App > div:last-child h3:first-of-type ~ p {
-    width: calc(50% - 8px);
-  }
-}
-
-@media (max-width: 420px) {
-
-  .App > label {
+  footer {
     flex-direction: column;
 
-    align-items: flex-start;
-
-    gap: 5px;
+    gap: 8px;
   }
 
-  input {
-    width: 100%;
+}
 
-    margin-left: 0;
+
+/* =========================================================
+   PRINT REPORT
+========================================================= */
+
+@media print {
+
+  body {
+    background: white;
+    color: black;
   }
 
-  .App > div:last-child h3:first-of-type ~ p {
-    width: 100%;
-
-    margin: 4px 0;
+  .topbar,
+  .control-panel,
+  .hero,
+  footer,
+  .report-btn,
+  .secondary-btn,
+  .ghost-btn,
+  .primary-btn {
+    display: none !important;
   }
+
+  .app-shell {
+    max-width: none;
+
+    padding: 0;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .results {
+    border: 0;
+
+    background: white;
+
+    color: black;
+
+    padding: 0;
+  }
+
+  .metric-card,
+  .design-card,
+  .chart-card,
+  .reason-card,
+  .compare-table,
+  .u-grid div {
+    break-inside: avoid;
+
+    color: black;
+
+    background: white;
+  }
+
+  .assumptions {
+    color: #333;
+  }
+
+  .results * {
+    color: inherit;
+  }
+
+  .eyebrow,
+  .recommend-badge,
+  .metric-icon,
+  .reasons svg {
+    color: #137866;
+  }
+
+  .chart-card {
+    border:
+      1px solid #ddd;
+  }
+
 }
