@@ -70,39 +70,31 @@ const initialForm = {
 ========================================================= */
 
 const money = (value) =>
-  `₹${Math.round(value || 0).toLocaleString("en-IN")}`;
+  `₹${Math.round(Number(value) || 0).toLocaleString("en-IN")}`;
 
 const pct = (value) =>
-  `${value > 0 ? "+" : ""}${Number(value || 0).toFixed(1)}%`;
+  `${Number(value || 0) > 0 ? "+" : ""}${Number(
+    value || 0
+  ).toFixed(1)}%`;
 
 
 /* =========================================================
-   METRIC CARD
+   METRIC
 ========================================================= */
 
-function Metric({
-  icon: Icon,
-  label,
-  value,
-  sub,
-}) {
+function Metric({ icon: Icon, label, value, sub }) {
   return (
     <div className="metric-card">
-
       <div className="metric-icon">
         <Icon size={18} />
       </div>
 
       <div>
         <span>{label}</span>
-
         <strong>{value}</strong>
 
-        {sub && (
-          <small>{sub}</small>
-        )}
+        {sub && <small>{sub}</small>}
       </div>
-
     </div>
   );
 }
@@ -117,8 +109,25 @@ function DesignCard({
   recommended = false,
   onUse,
 }) {
+  if (!design) return null;
 
-  const feasible = design.feasible;
+  const feasible =
+    design.feasibility?.feasible ?? false;
+
+  const wall =
+    design.design?.wall_material || "—";
+
+  const roof =
+    design.design?.roof_material || "—";
+
+  const floor =
+    design.design?.floor_material || "—";
+
+  const scores =
+    design.scores || {};
+
+  const cost =
+    design.cost?.total || 0;
 
   return (
     <article
@@ -126,7 +135,6 @@ function DesignCard({
         recommended ? "recommended" : ""
       }`}
     >
-
       {recommended && (
         <div className="recommend-badge">
           <Sparkles size={13} />
@@ -135,96 +143,61 @@ function DesignCard({
       )}
 
       <div className="design-title">
-
         <div>
-
-          <span>
-            Design configuration
-          </span>
+          <span>Design configuration</span>
 
           <h3>
-            {design.materials.wall}
-            {" + "}
-            {design.materials.roof}
-            {" + "}
-            {design.materials.floor}
+            {wall} + {roof} + {floor}
           </h3>
-
         </div>
 
         <div className="score">
-
-          <b>
-            {design.overall_score}
-          </b>
-
-          <small>
-            /100
-          </small>
-
+          <b>{Number(scores.overall || 0).toFixed(1)}</b>
+          <small>/100</small>
         </div>
-
       </div>
-
 
       <div className="material-pills">
-
-        <span>
-          Wall · {design.materials.wall}
-        </span>
-
-        <span>
-          Roof · {design.materials.roof}
-        </span>
-
-        <span>
-          Floor · {design.materials.floor}
-        </span>
-
+        <span>Wall · {wall}</span>
+        <span>Roof · {roof}</span>
+        <span>Floor · {floor}</span>
       </div>
 
-
       <div className="mini-grid">
-
         <div>
           <small>Thermal</small>
           <b>
-            {design.thermal_score}
+            {Number(scores.thermal || 0).toFixed(1)}
           </b>
         </div>
 
         <div>
           <small>Comfort</small>
           <b>
-            {design.comfort_score}%
+            {Number(scores.comfort || 0).toFixed(1)}%
           </b>
         </div>
 
         <div>
           <small>Sustainability</small>
           <b>
-            {design.sustainability_score}
+            {Number(
+              scores.sustainability || 0
+            ).toFixed(1)}
           </b>
         </div>
 
         <div>
           <small>Cost</small>
-          <b>
-            {money(design.cost)}
-          </b>
+          <b>{money(cost)}</b>
         </div>
-
       </div>
-
 
       <div
         className={`feasibility ${
-          feasible
-            ? "feasible"
-            : "fallback"
+          feasible ? "feasible" : "fallback"
         }`}
       >
-
         {feasible ? (
           <>
             <CheckCircle2 size={15} />
@@ -236,22 +209,17 @@ function DesignCard({
             Fallback configuration
           </>
         )}
-
       </div>
-
 
       {onUse && (
         <button
           className="secondary-btn"
-          onClick={() =>
-            onUse(design)
-          }
+          onClick={() => onUse(design)}
         >
           <RefreshCw size={15} />
           Use this design
         </button>
       )}
-
     </article>
   );
 }
@@ -262,7 +230,6 @@ function DesignCard({
 ========================================================= */
 
 function App() {
-
   const [materials, setMaterials] =
     useState({});
 
@@ -299,48 +266,84 @@ function App() {
 
 
   /* =======================================================
-     LOAD INITIAL DATA
+     LOAD BACKEND DATA
   ======================================================= */
 
   useEffect(() => {
+    async function loadData() {
+      try {
+        setError("");
 
-    Promise.all([
-      getMaterials(),
-      getClimates(),
-      getLocations(),
-    ])
-
-      .then(
-        ([
+        const [
           materialData,
           climateData,
           locationData,
-        ]) => {
+        ] = await Promise.all([
+          getMaterials(),
+          getClimates(),
+          getLocations(),
+        ]);
 
-          setMaterials(
-            materialData.materials
-          );
+        const allMaterials =
+          materialData?.materials || {};
 
-          setGroups({
-            walls: materialData.walls,
-            roofs: materialData.roofs,
-            floors: materialData.floors,
-          });
+        setMaterials(allMaterials);
 
-          setClimates(
-            climateData.climates
-          );
+        /*
+          Backend returns:
 
-          setLocations(
-            locationData.locations
-          );
-        }
-      )
+          {
+            materials: {
+              Mud: {
+                type: "wall"
+              },
+              Aerogel: {
+                type: "roof"
+              },
+              Wood: {
+                type: "floor"
+              }
+            }
+          }
 
-      .catch((e) => {
-        setError(e.message);
-      });
+          So we create the groups here.
+        */
 
+        setGroups({
+          walls: Object.keys(allMaterials).filter(
+            (name) =>
+              allMaterials[name]?.type === "wall"
+          ),
+
+          roofs: Object.keys(allMaterials).filter(
+            (name) =>
+              allMaterials[name]?.type === "roof"
+          ),
+
+          floors: Object.keys(allMaterials).filter(
+            (name) =>
+              allMaterials[name]?.type === "floor"
+          ),
+        });
+
+        setClimates(
+          climateData?.climates || {}
+        );
+
+        setLocations(
+          locationData?.locations || {}
+        );
+      } catch (e) {
+        console.error(e);
+
+        setError(
+          e?.message ||
+            "Unable to connect to AIKYAM backend."
+        );
+      }
+    }
+
+    loadData();
   }, []);
 
 
@@ -349,35 +352,34 @@ function App() {
   ======================================================= */
 
   const chartData = useMemo(() => {
+    const data =
+      simulation?.simulation;
 
-    if (
-      !simulation?.simulation?.hours
-    ) {
+    if (!data?.hours) {
       return [];
     }
 
-    return simulation.simulation.hours.map(
+    return data.hours.map(
       (hour, index) => ({
         hour,
 
         ambient:
-          simulation.simulation
-            .ambient[index],
+          data.ambient_temperature?.[index] ??
+          null,
 
         indoor:
-          simulation.simulation
-            .indoor[index],
+          data.indoor_temperature?.[index] ??
+          null,
 
         solar:
-          simulation.simulation
-            .solar[index],
+          data.solar_gain?.[index] ??
+          null,
 
         heatLoss:
-          simulation.simulation
-            .heat_loss[index],
+          data.heat_loss?.[index] ??
+          null,
       })
     );
-
   }, [simulation]);
 
 
@@ -385,25 +387,17 @@ function App() {
      FORM UPDATE
   ======================================================= */
 
-  function update(
-    name,
-    value,
-  ) {
-
+  function update(name, value) {
     setForm((current) => {
-
       const next = {
         ...current,
         [name]: value,
       };
 
       if (
-        name === "location"
-        && locations[value]
+        name === "location" &&
+        locations[value]
       ) {
-
-        next.location = value;
-
         next.climate =
           locations[value];
       }
@@ -417,42 +411,26 @@ function App() {
      BUILD API PAYLOAD
   ======================================================= */
 
-  function payload(
-    overrides = {},
-  ) {
-
+  function payload(overrides = {}) {
     const current = {
       ...form,
       ...overrides,
     };
 
     return {
+      climate: current.climate,
 
-      climate:
-        current.climate,
+      location: current.location,
 
-      location:
-        current.location,
-
-      budget:
-        Number(current.budget),
+      budget: Number(current.budget),
 
       glazing_area:
-        Number(
-          current.glazing_area
-        ),
+        Number(current.glazing_area),
 
       dimensions: {
-
-        width:
-          Number(current.width),
-
-        length:
-          Number(current.length),
-
-        height:
-          Number(current.height),
-
+        width: Number(current.width),
+        length: Number(current.length),
+        height: Number(current.height),
       },
 
       wall_material:
@@ -465,109 +443,100 @@ function App() {
         current.floor_material,
 
       wall_thickness:
-        Number(
-          current.wall_thickness
-        ),
+        Number(current.wall_thickness),
 
       roof_thickness:
-        Number(
-          current.roof_thickness
-        ),
+        Number(current.roof_thickness),
 
       floor_thickness:
-        Number(
-          current.floor_thickness
-        ),
+        Number(current.floor_thickness),
     };
   }
 
 
   /* =======================================================
-     OPTIMIZATION
+     RUN OPTIMIZATION
   ======================================================= */
 
   async function runOptimization() {
-
     setLoading(true);
     setError("");
     setComparison(null);
 
     try {
-
       const optimized =
-        await optimize(
-          payload()
-        );
+        await optimize(payload());
 
-      setResult(
-        optimized
-      );
-
-      setSimulation(
-        optimized.recommended_design
-      );
-
+      setResult(optimized);
 
       const recommended =
-        optimized.recommended_design;
+        optimized?.recommended_design;
 
+      if (!recommended) {
+        throw new Error(
+          "Optimizer returned no recommended design."
+        );
+      }
+
+      /*
+        recommended_design is itself a complete
+        simulation result.
+
+        Backend structure:
+
+        recommended_design.design.wall_material
+        recommended_design.design.roof_material
+        recommended_design.design.floor_material
+      */
+
+      setSimulation(recommended);
 
       const optimizedPayload =
         payload({
           wall_material:
-            recommended.materials.wall,
+            recommended.design
+              .wall_material,
 
           roof_material:
-            recommended.materials.roof,
+            recommended.design
+              .roof_material,
 
           floor_material:
-            recommended.materials.floor,
+            recommended.design
+              .floor_material,
         });
-
 
       const cmp =
         await compare({
-          current:
-            payload(),
-
-          optimized:
-            optimizedPayload,
+          current: payload(),
+          optimized: optimizedPayload,
         });
 
-
-      setComparison(
-        cmp
-      );
-
+      setComparison(cmp);
     } catch (e) {
+      console.error(e);
 
       setError(
-        e.message
+        e?.message ||
+          "Optimization failed."
       );
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
 
   /* =======================================================
-     CURRENT DESIGN SIMULATION
+     RUN SIMULATION
   ======================================================= */
 
   async function runSimulation() {
-
     setLoading(true);
     setError("");
 
     try {
-
       const simulationResult =
-        await simulate(
-          payload()
-        );
+        await simulate(payload());
 
       setSimulation(
         simulationResult
@@ -575,43 +544,38 @@ function App() {
 
       setResult(null);
       setComparison(null);
-
     } catch (e) {
+      console.error(e);
 
       setError(
-        e.message
+        e?.message ||
+          "Simulation failed."
       );
-
     } finally {
-
       setLoading(false);
-
     }
   }
 
 
   /* =======================================================
-     USE RECOMMENDED DESIGN
+     USE DESIGN
   ======================================================= */
 
-  function useDesign(
-    design,
-  ) {
+  function useDesign(design) {
+    if (!design?.design) return;
 
-    setForm(
-      (current) => ({
-        ...current,
+    setForm((current) => ({
+      ...current,
 
-        wall_material:
-          design.materials.wall,
+      wall_material:
+        design.design.wall_material,
 
-        roof_material:
-          design.materials.roof,
+      roof_material:
+        design.design.roof_material,
 
-        floor_material:
-          design.materials.floor,
-      })
-    );
+      floor_material:
+        design.design.floor_material,
+    }));
 
     window.scrollTo({
       top: 0,
@@ -621,19 +585,16 @@ function App() {
 
 
   /* =======================================================
-     PRINT REPORT
+     PRINT
   ======================================================= */
 
   function printReport() {
-
     window.print();
-
   }
 
 
   const recommended =
     result?.recommended_design;
-
 
   const budget =
     Number(form.budget);
@@ -641,7 +602,10 @@ function App() {
 
   const budgetDifference =
     recommended
-      ? budget - recommended.cost
+      ? budget -
+        Number(
+          recommended.cost?.total || 0
+        )
       : 0;
 
 
@@ -650,7 +614,6 @@ function App() {
   ======================================================= */
 
   return (
-
     <div className="app-shell">
 
       {/* ===================================================
@@ -658,7 +621,6 @@ function App() {
       =================================================== */}
 
       <header className="topbar">
-
         <div className="brand">
 
           <div className="brand-mark">
@@ -675,15 +637,10 @@ function App() {
 
         </div>
 
-
         <div className="status">
-
           <span className="dot" />
-
           Optimization engine online
-
         </div>
-
       </header>
 
 
@@ -696,34 +653,24 @@ function App() {
         <section className="hero">
 
           <div className="eyebrow">
-
             <Sparkles size={14} />
-
             CLIMATE-AWARE DESIGN ENGINE
-
           </div>
 
-
           <h1>
-
             Design a shelter that
             <br />
-
             <em>
               works with its climate.
             </em>
-
           </h1>
 
-
           <p>
-
             AIKYAM evaluates thermal
             performance, cost, comfort and
             sustainability across multiple
             material configurations to find
             feasible passive-shelter designs.
-
           </p>
 
         </section>
@@ -734,15 +681,10 @@ function App() {
         ================================================= */}
 
         {error && (
-
           <div className="error">
-
             <ShieldCheck size={17} />
-
             {error}
-
           </div>
-
         )}
 
 
@@ -752,36 +694,29 @@ function App() {
 
         <section className="workspace">
 
-
-          {/* ===============================================
-              LEFT CONTROL PANEL
-          =============================================== */}
+          {/* =================================================
+              CONTROL PANEL
+          ================================================= */}
 
           <aside className="control-panel">
 
             <div className="panel-heading">
-
               <span>
-                01 / DESIGN INPUT
+                01 / DESIGN INPUTS
               </span>
 
               <h2>
                 Define your shelter
               </h2>
-
             </div>
 
 
             {/* LOCATION */}
 
             <div className="field">
-
               <label>
-
                 <MapPin size={14} />
-
                 Location
-
               </label>
 
               <select
@@ -793,29 +728,23 @@ function App() {
                   )
                 }
               >
-
                 {Object.keys(
                   locations
                 ).map((location) => (
-
                   <option
                     key={location}
                     value={location}
                   >
                     {location}
                   </option>
-
                 ))}
-
               </select>
-
             </div>
 
 
             {/* CLIMATE */}
 
             <div className="field">
-
               <label>
                 Climate
               </label>
@@ -829,24 +758,19 @@ function App() {
                   )
                 }
               >
-
                 {Object.entries(
                   climates
                 ).map(
                   ([key, climate]) => (
-
                     <option
                       key={key}
                       value={key}
                     >
-                      {climate.name}
+                      {climate?.name || key}
                     </option>
-
                   )
                 )}
-
               </select>
-
             </div>
 
 
@@ -855,7 +779,6 @@ function App() {
             <div className="field-grid">
 
               <div className="field">
-
                 <label>
                   Width <small>m</small>
                 </label>
@@ -872,12 +795,10 @@ function App() {
                     )
                   }
                 />
-
               </div>
 
 
               <div className="field">
-
                 <label>
                   Length <small>m</small>
                 </label>
@@ -894,12 +815,10 @@ function App() {
                     )
                   }
                 />
-
               </div>
 
 
               <div className="field">
-
                 <label>
                   Height <small>m</small>
                 </label>
@@ -916,12 +835,10 @@ function App() {
                     )
                   }
                 />
-
               </div>
 
 
               <div className="field">
-
                 <label>
                   Glazing <small>m²</small>
                 </label>
@@ -930,9 +847,7 @@ function App() {
                   type="number"
                   min="0"
                   step="0.5"
-                  value={
-                    form.glazing_area
-                  }
+                  value={form.glazing_area}
                   onChange={(e) =>
                     update(
                       "glazing_area",
@@ -940,7 +855,6 @@ function App() {
                     )
                   }
                 />
-
               </div>
 
             </div>
@@ -953,7 +867,6 @@ function App() {
               <Wallet size={18} />
 
               <div>
-
                 <label>
                   Design budget
                 </label>
@@ -964,29 +877,15 @@ function App() {
                   max="500000"
                   step="1000"
                   value={form.budget}
-                  onChange={(e) => {
-
-                    const value =
+                  onChange={(e) =>
+                    update(
+                      "budget",
                       Number(
                         e.target.value
-                      );
-
-                    if (
-                      value >= 0
-                      &&
-                      value <= 500000
-                    ) {
-
-                      update(
-                        "budget",
-                        value
-                      );
-
-                    }
-
-                  }}
+                      )
+                    )
+                  }
                 />
-
               </div>
 
               <span>
@@ -997,7 +896,6 @@ function App() {
 
 
             <div className="budget-hint">
-
               <span>
                 Recommended prototype range
               </span>
@@ -1005,7 +903,6 @@ function App() {
               <strong>
                 ₹10,000 – ₹5,00,000
               </strong>
-
             </div>
 
 
@@ -1042,13 +939,8 @@ function App() {
                 "Floor",
                 groups.floors,
               ],
-
             ].map(
-              ([
-                name,
-                label,
-                options,
-              ]) => (
+              ([name, label, options]) => (
 
                 <div
                   className="field"
@@ -1071,14 +963,12 @@ function App() {
 
                     {options.map(
                       (option) => (
-
                         <option
                           key={option}
                           value={option}
                         >
                           {option}
                         </option>
-
                       )
                     )}
 
@@ -1094,14 +984,11 @@ function App() {
 
             <button
               className="primary-btn"
-              onClick={
-                runOptimization
-              }
+              onClick={runOptimization}
               disabled={loading}
             >
 
               {loading ? (
-
                 <>
                   <Loader2
                     className="spin"
@@ -1109,22 +996,15 @@ function App() {
                   />
 
                   Evaluating designs…
-
                 </>
-
               ) : (
-
                 <>
                   <Sparkles size={18} />
 
                   Optimize my shelter
 
-                  <ArrowRight
-                    size={17}
-                  />
-
+                  <ArrowRight size={17} />
                 </>
-
               )}
 
             </button>
@@ -1134,39 +1014,31 @@ function App() {
 
             <button
               className="ghost-btn"
-              onClick={
-                runSimulation
-              }
+              onClick={runSimulation}
               disabled={loading}
             >
-
               <Activity size={16} />
 
               Simulate current design
-
             </button>
 
           </aside>
 
 
-          {/* ===============================================
+          {/* =================================================
               RESULTS
-          =============================================== */}
+          ================================================= */}
 
           <section className="results">
 
-
-            {/* EMPTY */}
+            {/* EMPTY STATE */}
 
             {!result &&
               !simulation && (
-
                 <div className="empty-state">
 
                   <div className="empty-icon">
-
                     <Home size={34} />
-
                   </div>
 
                   <h2>
@@ -1174,7 +1046,6 @@ function App() {
                   </h2>
 
                   <p>
-
                     Enter your shelter
                     parameters and run the
                     optimization engine.
@@ -1182,47 +1053,30 @@ function App() {
                     material combinations
                     and show thermal
                     trade-offs.
-
                   </p>
 
-
                   <div className="flow">
-
-                    <span>
-                      Inputs
-                    </span>
-
+                    <span>Inputs</span>
                     <ArrowRight />
 
-                    <span>
-                      Simulation
-                    </span>
-
+                    <span>Simulation</span>
                     <ArrowRight />
 
-                    <span>
-                      Optimization
-                    </span>
-
+                    <span>Optimization</span>
                     <ArrowRight />
 
-                    <span>
-                      Design
-                    </span>
-
+                    <span>Design</span>
                   </div>
 
                 </div>
-
               )}
 
 
-            {/* =============================================
+            {/* =================================================
                 OPTIMIZATION RESULT
-            ============================================= */}
+            ================================================= */}
 
             {result && recommended && (
-
               <>
 
                 <div className="result-header">
@@ -1230,13 +1084,9 @@ function App() {
                   <div>
 
                     <div className="eyebrow">
-
                       OPTIMIZATION COMPLETE ·{" "}
-
                       {result.evaluated_designs}
-
                       {" "}CONFIGURATIONS
-
                     </div>
 
                     <h2>
@@ -1245,18 +1095,12 @@ function App() {
 
                   </div>
 
-
                   <button
                     className="report-btn"
-                    onClick={
-                      printReport
-                    }
+                    onClick={printReport}
                   >
-
                     <Download size={16} />
-
                     Design report
-
                   </button>
 
                 </div>
@@ -1275,28 +1119,20 @@ function App() {
 
                   {result.optimization_status ===
                   "feasible" ? (
-
                     <>
-                      <CheckCircle2
-                        size={16}
-                      />
+                      <CheckCircle2 size={16} />
 
                       {result.feasible_designs}
                       {" "}feasible designs found
                     </>
-
                   ) : (
-
                     <>
-                      <ShieldCheck
-                        size={16}
-                      />
+                      <ShieldCheck size={16} />
 
                       No design satisfied every
                       constraint. Showing the
                       strongest fallback.
                     </>
-
                   )}
 
                 </div>
@@ -1309,7 +1145,10 @@ function App() {
                   <Metric
                     icon={Zap}
                     label="Overall performance"
-                    value={`${recommended.overall_score}/100`}
+                    value={`${Number(
+                      recommended.scores?.overall ||
+                        0
+                    ).toFixed(1)}/100`}
                     sub="multi-objective score"
                   />
 
@@ -1317,25 +1156,39 @@ function App() {
                   <Metric
                     icon={Thermometer}
                     label="Thermal"
-                    value={`${recommended.thermal_score}/100`}
-                    sub={`${recommended.comfort_hours} comfortable hours`}
+                    value={`${Number(
+                      recommended.scores?.thermal ||
+                        0
+                    ).toFixed(1)}/100`}
+                    sub={`${Number(
+                      recommended.scores?.comfort ||
+                        0
+                    ).toFixed(1)}% comfort score`}
                   />
 
 
                   <Metric
                     icon={Leaf}
                     label="Sustainability"
-                    value={`${recommended.sustainability_score}/100`}
-                    sub={`${Math.round(recommended.embodied_co2)} kg CO₂e estimate`}
+                    value={`${Number(
+                      recommended.scores?.sustainability ||
+                        0
+                    ).toFixed(1)}/100`}
+                    sub={`${Math.round(
+                      recommended.environment
+                        ?.embodied_co2 || 0
+                    )} kg CO₂e estimate`}
                   />
 
 
                   <Metric
                     icon={Wallet}
                     label="Estimated cost"
-                    value={money(recommended.cost)}
+                    value={money(
+                      recommended.cost?.total
+                    )}
                     sub={
-                      recommended.cost <=
+                      recommended.cost?.total <=
                       budget
                         ? `${money(
                             budgetDifference
@@ -1354,13 +1207,9 @@ function App() {
                 {/* RECOMMENDED DESIGN */}
 
                 <DesignCard
-                  design={
-                    recommended
-                  }
+                  design={recommended}
                   recommended
-                  onUse={
-                    useDesign
-                  }
+                  onUse={useDesign}
                 />
 
 
@@ -1374,13 +1223,9 @@ function App() {
 
                   <div className="reasons">
 
-                    {result.reasoning.map(
+                    {(result.reasoning || []).map(
                       (reason, index) => (
-
-                        <div
-                          key={index}
-                        >
-
+                        <div key={index}>
                           <CheckCircle2
                             size={16}
                           />
@@ -1388,9 +1233,7 @@ function App() {
                           <span>
                             {reason}
                           </span>
-
                         </div>
-
                       )
                     )}
 
@@ -1416,33 +1259,27 @@ function App() {
 
                 <div className="alternatives">
 
-                  {result.alternatives.map(
+                  {(result.alternatives || []).map(
                     (design, index) => (
-
                       <DesignCard
                         key={index}
                         design={design}
-                        onUse={
-                          useDesign
-                        }
+                        onUse={useDesign}
                       />
-
                     )
                   )}
 
                 </div>
 
               </>
-
             )}
 
 
-            {/* =============================================
+            {/* =================================================
                 THERMAL SIMULATION
-            ============================================= */}
+            ================================================= */}
 
             {simulation && (
-
               <>
 
                 <div className="section-title">
@@ -1458,33 +1295,29 @@ function App() {
                 </div>
 
 
-                {/* TEMPERATURE */}
+                {/* TEMPERATURE CHART */}
 
                 <div className="chart-card">
 
                   <div className="chart-head">
 
                     <div>
-
                       <b>
                         Indoor vs ambient temperature
                       </b>
 
                       <small>
-                        Deterministic prototype thermal model
+                        Deterministic prototype
+                        thermal model
                       </small>
-
                     </div>
-
 
                     <div className="legend">
 
                       <span className="indoor-dot" />
-
                       Indoor
 
                       <span className="ambient-dot" />
-
                       Ambient
 
                     </div>
@@ -1556,22 +1389,21 @@ function App() {
                 </div>
 
 
-                {/* SOLAR */}
+                {/* SOLAR CHART */}
 
                 <div className="chart-card">
 
                   <div className="chart-head">
 
                     <div>
-
                       <b>
                         Solar gain
                       </b>
 
                       <small>
-                        Estimated hourly solar contribution
+                        Estimated hourly solar
+                        contribution
                       </small>
-
                     </div>
 
                   </div>
@@ -1637,85 +1469,131 @@ function App() {
                 <div className="u-grid">
 
                   <div>
-
                     <span>
                       Wall U-value
                     </span>
 
                     <b>
-                      {simulation.wall_u}
+                      {simulation.u_values?.wall}
                     </b>
 
                     <small>
                       W/m²K
                     </small>
-
                   </div>
 
 
                   <div>
-
                     <span>
                       Roof U-value
                     </span>
 
                     <b>
-                      {simulation.roof_u}
+                      {simulation.u_values?.roof}
                     </b>
 
                     <small>
                       W/m²K
                     </small>
-
                   </div>
 
 
                   <div>
-
                     <span>
                       Floor U-value
                     </span>
 
                     <b>
-                      {simulation.floor_u}
+                      {simulation.u_values?.floor}
                     </b>
 
                     <small>
                       W/m²K
                     </small>
-
                   </div>
 
 
                   <div>
-
                     <span>
                       Avg. envelope U
                     </span>
 
                     <b>
-                      {simulation.average_u}
+                      {simulation.u_values?.average}
                     </b>
 
                     <small>
                       W/m²K
                     </small>
+                  </div>
+
+                </div>
+
+
+                {/* SIMULATION INFO */}
+
+                <div className="reason-card">
+
+                  <h3>
+                    Current design summary
+                  </h3>
+
+                  <div className="reasons">
+
+                    <div>
+                      <CheckCircle2 size={16} />
+
+                      <span>
+                        Wall:{" "}
+                        {simulation.design
+                          ?.wall_material}
+                      </span>
+                    </div>
+
+                    <div>
+                      <CheckCircle2 size={16} />
+
+                      <span>
+                        Roof:{" "}
+                        {simulation.design
+                          ?.roof_material}
+                      </span>
+                    </div>
+
+                    <div>
+                      <CheckCircle2 size={16} />
+
+                      <span>
+                        Floor:{" "}
+                        {simulation.design
+                          ?.floor_material}
+                      </span>
+                    </div>
+
+                    <div>
+                      <CheckCircle2 size={16} />
+
+                      <span>
+                        Estimated cost:{" "}
+                        {money(
+                          simulation.cost?.total
+                        )}
+                      </span>
+                    </div>
 
                   </div>
 
                 </div>
 
               </>
-
             )}
 
 
-            {/* =============================================
+            {/* =================================================
                 COMPARISON
-            ============================================= */}
+            ================================================= */}
 
             {comparison && (
-
               <section className="compare-section">
 
                 <div className="section-title">
@@ -1735,136 +1613,186 @@ function App() {
 
                   <div className="compare-head">
 
-                    <span>
-                      Metric
-                    </span>
+                    <span>Metric</span>
 
-                    <b>
-                      Current
-                    </b>
+                    <b>Current</b>
 
-                    <b>
-                      Optimized
-                    </b>
+                    <b>Optimized</b>
 
-                    <span>
-                      Change
-                    </span>
+                    <span>Change</span>
 
                   </div>
 
 
                   {[
                     [
-                      "thermal_score",
+                      "thermal",
                       "Thermal score",
+                      (item) =>
+                        item?.scores?.thermal,
                       "",
                     ],
 
                     [
-                      "comfort_score",
+                      "comfort",
                       "Comfort score",
+                      (item) =>
+                        item?.scores?.comfort,
                       "%",
                     ],
 
                     [
                       "cost",
                       "Estimated cost",
+                      (item) =>
+                        item?.cost?.total,
                       "money",
                     ],
 
                     [
-                      "heat_loss_peak",
+                      "heat_loss",
                       "Peak heat loss",
+                      (item) =>
+                        Math.max(
+                          ...(item?.simulation
+                            ?.heat_loss || [0])
+                        ),
                       "",
                     ],
 
                     [
-                      "sustainability_score",
+                      "sustainability",
                       "Sustainability",
+                      (item) =>
+                        item?.scores
+                          ?.sustainability,
                       "",
                     ],
 
                     [
                       "average_u",
                       "Average U-value",
+                      (item) =>
+                        item?.u_values?.average,
                       "",
                     ],
-
                   ].map(
                     ([
                       key,
                       label,
+                      getValue,
                       type,
-                    ]) => (
+                    ]) => {
 
-                      <div
-                        className="compare-row"
-                        key={key}
-                      >
+                      const currentValue =
+                        getValue(
+                          comparison.current
+                        );
 
-                        <span>
-                          {label}
-                        </span>
+                      const optimizedValue =
+                        getValue(
+                          comparison.optimized
+                        );
 
+                      /*
+                        Backend /compare currently
+                        exposes improvement for:
 
-                        <b>
+                        thermal
+                        comfort
+                        sustainability
+                        overall
+                        cost_difference
 
-                          {type === "money"
-                            ? money(
-                                comparison
-                                  .current[
-                                    key
-                                  ]
-                              )
-                            : `${comparison.current[key]}${type}`}
+                        So for metrics without a
+                        backend improvement field,
+                        calculate it here.
+                      */
 
-                        </b>
+                      let improvement;
 
+                      if (
+                        key === "cost"
+                      ) {
+                        improvement =
+                          Number(
+                            optimizedValue || 0
+                          ) -
+                          Number(
+                            currentValue || 0
+                          );
+                      } else {
+                        improvement =
+                          Number(
+                            optimizedValue || 0
+                          ) -
+                          Number(
+                            currentValue || 0
+                          );
+                      }
 
-                        <b>
+                      return (
+                        <div
+                          className="compare-row"
+                          key={key}
+                        >
 
-                          {type === "money"
-                            ? money(
-                                comparison
-                                  .optimized[
-                                    key
-                                  ]
-                              )
-                            : `${comparison.optimized[key]}${type}`}
+                          <span>
+                            {label}
+                          </span>
 
-                        </b>
+                          <b>
+                            {type === "money"
+                              ? money(
+                                  currentValue
+                                )
+                              : `${Number(
+                                  currentValue ||
+                                    0
+                                ).toFixed(
+                                  2
+                                )}${type}`}
+                          </b>
 
+                          <b>
+                            {type === "money"
+                              ? money(
+                                  optimizedValue
+                                )
+                              : `${Number(
+                                  optimizedValue ||
+                                    0
+                                ).toFixed(
+                                  2
+                                )}${type}`}
+                          </b>
 
-                        <strong>
+                          <strong>
+                            {key === "cost"
+                              ? money(
+                                  improvement
+                                )
+                              : pct(
+                                  improvement
+                                )}
+                          </strong>
 
-                          {pct(
-                            comparison
-                              .improvements[
-                                key
-                              ]
-                          )}
-
-                        </strong>
-
-                      </div>
-
-                    )
+                        </div>
+                      );
+                    }
                   )}
 
                 </div>
 
               </section>
-
             )}
 
 
-            {/* =============================================
+            {/* =================================================
                 ASSUMPTIONS
-            ============================================= */}
+            ================================================= */}
 
             {(result || simulation) && (
-
               <div className="assumptions">
 
                 <ShieldCheck size={17} />
@@ -1876,7 +1804,6 @@ function App() {
                   </b>
 
                   <p>
-
                     Material properties, costs
                     and sustainability values are
                     reference assumptions.
@@ -1885,13 +1812,11 @@ function App() {
                     intended for design exploration,
                     not certified architectural or
                     engineering analysis.
-
                   </p>
 
                 </div>
 
               </div>
-
             )}
 
           </section>
@@ -1900,6 +1825,10 @@ function App() {
 
       </main>
 
+
+      {/* ===================================================
+          FOOTER
+      =================================================== */}
 
       <footer>
 
